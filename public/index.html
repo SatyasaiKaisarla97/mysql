@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+      crossorigin="anonymous"
+    />
+    <title>User Form</title>
+  </head>
+  <style>
+    li {
+        list-style: none;
+        margin-top: 5px;
+    }
+  </style>
+
+  <body>
+    <h1>Book Your Appointment</h1>
+    <form id="userForm">
+      <ul>
+        <li>
+          <label for="name">Name:</label>
+          <input type="text" id="name" name="name" required />
+        </li>
+        <li>
+          <label for="phoneNumber">Phone Number:</label>
+          <input type="tel" id="phoneNumber" name="phoneNumber" required />
+        </li>
+        <li>
+          <label for="email">Email:</label>
+          <input type="email" id="email" name="email" required />
+        </li>
+        <button type="submit">Submit</button>
+      </ul>
+    </form>
+
+    <h2>Users</h2>
+    <ul id="userList"></ul>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", async () => {
+        const userForm = document.getElementById("userForm");
+        const userList = document.getElementById("userList");
+
+        userForm.addEventListener("submit", async (event) => {
+          event.preventDefault();
+
+          const name = document.getElementById("name").value;
+          const phoneNumber = document.getElementById("phoneNumber").value;
+          const email = document.getElementById("email").value;
+
+          try {
+            const response = await axios.post("/User/users", {
+              name,
+              phoneNumber,
+              email,
+            });
+
+            if (response.data) {
+              const user = response.data;
+              showOutput(user);
+              clearForm();
+            } else {
+              console.error(error);
+            }
+          } catch (error) {
+            console.error("Error:", error);
+          }
+        });
+        try {
+          const response = await axios.get("/User/users");
+          const users = response.data;
+          users.forEach((user) => showOutput(user));
+        } catch (error) {
+          console.error(error);
+        }
+
+        function showOutput(user) {
+          const listItem = document.createElement("li");
+          listItem.textContent = `${user.name}-${user.phoneNumber}-${user.email}`;
+          userList.appendChild(listItem);
+        }
+
+        function clearForm() {
+          document.getElementById("name").value = "";
+          document.getElementById("phoneNumber").value = "";
+          document.getElementById("email").value = "";
+        }
+      });
+    </script>
+  </body>
+</html>
