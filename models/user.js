@@ -1,19 +1,20 @@
 const Sequelize = require('sequelize');
+const {v4 : uuidv4} = require('uuid')
 const sequelize = require('../util/database');
 
 const User = sequelize.define('User', {
   id: {
-    type: Sequelize.INTEGER,
+    type: Sequelize.UUID,
+    defaultValue: () => uuidv4(),
     allowNull:false,
     primaryKey: true,
-    autoIncrement: true,
   },
   name: {
     type: Sequelize.STRING,
     allowNull: false,
   },
   phoneNumber: {
-    type: Sequelize.INTEGER,
+    type: Sequelize.INTEGER(10),
     allowNull: false,
     unique: true,
   },
